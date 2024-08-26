@@ -6,4 +6,6 @@ langchain_groq
 typing
 chromadb
 
+sqlite3
+
 protobuf==3.20.1
