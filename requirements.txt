@@ -6,4 +6,4 @@ langchain_groq
 typing
 chromadb
 
-protobuff==3.20.1
+protobuf>=3.20,<5
