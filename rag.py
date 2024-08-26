@@ -6,6 +6,7 @@ from typing import List
 
 from langchain_community.vectorstores import Chroma
 from langchain.prompts import ChatPromptTemplate
+from langchain_community.embeddings.ollama import OllamaEmbeddings
 from langchain_core.output_parsers import StrOutputParser
 from file_management import get_embedding_function, list_uploaded_files
 import json
@@ -22,11 +23,15 @@ words, and cite where you got the information from. The context chunks are ranke
 \n\n{context}
 \n\nIf the context does not answer the question, please respond with "I don't know." According to the 
 context, the answer to {question} is:""")
+    
+    
 
     # Retrieve documents with similar embedding
     retriever = Chroma(
         persist_directory="./chroma", 
-        embedding_function=get_embedding_function()
+        embedding_function=OllamaEmbeddings(
+            model="nomic-embed-text"
+        )
     )
     if(collection_name == "All Collections"):
         filter = None
