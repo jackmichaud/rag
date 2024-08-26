@@ -26,13 +26,13 @@ context, the answer to {question} is:""")
 
     # Retrieve documents with similar embedding
     retriever = Chroma(
-        persist_directory="./app/chroma", 
+        persist_directory="./chroma", 
         embedding_function=get_embedding_function()
     )
     if(collection_name == "All Collections"):
         filter = None
     else:
-        filter = dict(filter = "app/data/" + collection_name)
+        filter = dict(filter = "data/" + collection_name)
     similar = retriever.similarity_search(question, k=6 , filter=filter)
 
     # Format chunks
@@ -81,7 +81,7 @@ def stream_rag_with_routing(question: str, collection_name: str):
 
     # Retrieve documents with similar embedding
     retriever = Chroma(
-        persist_directory="./app/chroma", 
+        persist_directory="./chroma", 
         embedding_function=get_embedding_function()
     )
 
@@ -110,7 +110,7 @@ def stream_rag_with_routing(question: str, collection_name: str):
         similar = []
         for name in names_of_relevant_documents:
             similar.extend(
-                retriever.similarity_search(question, k=6, filter={"source": "app/data/" + collection_name + "/" + name}) 
+                retriever.similarity_search(question, k=6, filter={"source": "data/" + collection_name + "/" + name}) 
             )
         
         # Format chunks

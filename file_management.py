@@ -18,25 +18,23 @@ def get_embedding_function():
 def list_uploaded_files(collection_name = None):
     files = {}
     if collection_name is not None:
-        files.update({collection_name: [f for f in os.listdir(f"app/data/{collection_name}") if f.endswith(".pdf")]})
+        files.update({collection_name: [f for f in os.listdir(f"data/{collection_name}") if f.endswith(".pdf")]})
         return files[collection_name]
     else:
-        for collection in os.listdir("app/data"):
-            files.update({collection: [f for f in os.listdir(f"app/data/{collection}") if f.endswith(".pdf")]})
+        for collection in os.listdir("data"):
+            files.update({collection: [f for f in os.listdir(f"data/{collection}") if f.endswith(".pdf")]})
         return files  
     
     
 def delete_file(file_path):
     print(f"Deleting file: {file_path}")
 
-    file_path = "app/" + file_path
-
     # Remove local file
     os.remove(file_path)
 
     # Remove file from vectorstore
     vectorstore = Chroma(
-        persist_directory="./app/chroma", 
+        persist_directory="./chroma", 
         embedding_function=get_embedding_function()
     )
     existing_items = vectorstore.get(where={"source": file_path})
@@ -59,7 +57,7 @@ def delete_file(file_path):
 
 def update_vectorstore_collection(collection_name: str):
     # Load documents in a given colleciton
-    document_loader = PyPDFDirectoryLoader(os.path.join("app", "data", collection_name))
+    document_loader = PyPDFDirectoryLoader(os.path.join("data", collection_name))
     docs = document_loader.load()
     print("Loaded", len(docs), "documents")
 
@@ -103,7 +101,7 @@ def update_vectorstore_collection(collection_name: str):
         chunk.metadata["filter"] = filter
 
     vectorstore = Chroma(
-        persist_directory="./app/chroma", 
+        persist_directory="./chroma", 
         embedding_function=get_embedding_function()
     )
 

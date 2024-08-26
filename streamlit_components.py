@@ -40,7 +40,7 @@ def chatbot(chat_function: callable):
 
 def context_selector():
     # Add a selectbox to the sidebar:
-    data = [collection for collection in os.listdir(f"app/data")]
+    data = [collection for collection in os.listdir(f"data")]
     data.insert(0, "All Collections")
 
     selectbox = st.selectbox('Use Content From', data)
@@ -48,7 +48,7 @@ def context_selector():
 
 def upload_selector():
     # Add a selectbox to the sidebar:
-    data = [collection for collection in os.listdir(f"app/data")]
+    data = [collection for collection in os.listdir(f"data")]
     data.append("New Collection")
 
     with st.sidebar:
@@ -78,10 +78,10 @@ def file_uploader(post_upload_function: callable):
     if upload_button:
         if file is not None:
             # Save the uploaded file to the specified directory
-            file_path = os.path.join("app/data", collection, file.name)
+            file_path = os.path.join("data", collection, file.name)
             
-            if not os.path.isdir(os.path.join("app/data", collection)):
-                os.makedirs(os.path.join("app/data", collection), exist_ok=True)
+            if not os.path.isdir(os.path.join("data", collection)):
+                os.makedirs(os.path.join("data", collection), exist_ok=True)
             
             # Write the uploaded file to the file path
             with open(file_path, "wb") as f:
