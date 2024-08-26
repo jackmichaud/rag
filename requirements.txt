@@ -5,3 +5,5 @@ langchain_community
 langchain_groq
 typing
 chromadb
+
+protobuff==3.20.1
