@@ -13,6 +13,10 @@ import json
 from langchain.load import dumps
 from langchain_groq import ChatGroq
 
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
 def stream_rag_pipeline(question: str, collection_name: str):
     prompt = ChatPromptTemplate.from_template("""You are a chatbot teaching assistant for the class  
 {expertise}. Here is the question you need to answer: {question}. 
