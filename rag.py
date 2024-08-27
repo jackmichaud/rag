@@ -29,8 +29,6 @@ words, and cite where you got the information from. The context chunks are ranke
 \n\nIf the context does not answer the question, please respond with "I don't know." According to the 
 context, the answer to {question} is:""")
     
-    
-
     # Retrieve documents with similar embedding
     retriever = Chroma(
         persist_directory="./chroma", 
