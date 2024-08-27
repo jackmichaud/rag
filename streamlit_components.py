@@ -40,6 +40,10 @@ def chatbot(chat_function: callable):
 
 def context_selector():
     # Add a selectbox to the sidebar:
+    
+    if not os.path.isdir("data"):
+        os.makedirs("data", exist_ok=True)
+
     data = [collection for collection in os.listdir(f"data")]
     data.insert(0, "All Collections")
 
