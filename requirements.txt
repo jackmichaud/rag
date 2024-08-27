@@ -6,6 +6,6 @@ langchain_groq
 typing
 chromadb
 
-sqlite3
+pysqlite3-binary
 
 protobuf==3.20.1
