@@ -7,12 +7,15 @@ from langchain_community.embeddings.ollama import OllamaEmbeddings
 from langchain.prompts import ChatPromptTemplate
 from langchain_groq import ChatGroq
 from langchain_core.output_parsers import StrOutputParser
+from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
+
+import streamlit as st
 
 
 def get_embedding_function():
-    embeddings = OllamaEmbeddings(
-      model="nomic-embed-text"
-    )
+    embeddings = HuggingFaceInferenceAPIEmbeddings(
+            api_key=st.secrets["HUGGINGFACE_API_KEY"], model_name="sentence-transformers/all-MiniLM-l6-v2"
+        )
     return embeddings
 
 def list_uploaded_files(collection_name = None):
@@ -39,7 +42,8 @@ def delete_file(file_path):
     )
     existing_items = vectorstore.get(where={"source": file_path})
     ids = list(existing_items.values())[0]
-    vectorstore.delete(ids=ids)
+    if(len(ids)):
+        vectorstore.delete(ids=ids)
 
     # Find the index of the last slash
     last_slash_index = file_path.rfind('/')

@@ -5,6 +5,7 @@ langchain_community
 langchain_groq
 typing
 chromadb
+pypdf
 
 pysqlite3-binary
 

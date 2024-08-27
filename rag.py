@@ -9,8 +9,6 @@ from langchain.prompts import ChatPromptTemplate
 from langchain_community.embeddings.ollama import OllamaEmbeddings
 from langchain_core.output_parsers import StrOutputParser
 from file_management import get_embedding_function, list_uploaded_files
-from langchain_community.embeddings import AlephAlphaAsymmetricSemanticEmbedding
-from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
 import json
 from langchain.load import dumps
 from langchain_groq import ChatGroq
@@ -36,9 +34,7 @@ context, the answer to {question} is:""")
     # Retrieve documents with similar embedding
     retriever = Chroma(
         persist_directory="./chroma", 
-        embedding_function=HuggingFaceInferenceAPIEmbeddings(
-            api_key=st.secrets["HUGGINGFACE_API_KEY"], model_name="sentence-transformers/all-MiniLM-l6-v2"
-        )
+        embedding_function=get_embedding_function()
     )
     if(collection_name == "All Collections"):
         filter = None
