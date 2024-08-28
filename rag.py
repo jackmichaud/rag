@@ -49,6 +49,9 @@ def stream_rag_pipeline(question: str, collection_name: str):
     parser = StrOutputParser()
     model = ChatGroq(model="mixtral-8x7b-32768", temperature=0)
 
+    if(len(similar) == 0):
+        return {"response": stream_data("I don't know. No context was given."), "sources": []}
+
     chain = prompt | model | parser
 
     sources = [os.path.basename(doc.metadata.get("id", None)) for doc in similar]
