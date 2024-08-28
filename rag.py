@@ -19,15 +19,14 @@ import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 def stream_rag_pipeline(question: str, collection_name: str):
-    prompt = ChatPromptTemplate.from_template("""You are a chatbot teaching assistant for the class  
-{expertise}. Here is the question you need to answer: {question}. 
-\n\nUse the context below to develop your answer. If the context does not answer this question, say so. 
-Do not overexplain. If you quote something from this context, copy it exactly without changing the 
-words, and cite where you got the information from. The context chunks are ranked from most relevant 
-(top) to the least relevant (bottom):
-\n\n{context}
-\n\nIf the context does not answer the question, please respond with "I don't know." According to the 
-context, the answer to {question} is:""")
+
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", "You are an assistant whose goal is to answer a user's question given the context from the following document collection: {expertise}"),
+        ("system", "Use only the context provided by the system to develop you answer. If the context does not answer the question, say so. Do not overexplain. If you quote something from this context, copy it exactly without changing the words, and cite where you got the information from."),
+        ("human", "User question: {question}"),
+        ("system", "Context ranked from most relevant (top) to least relevant (bottom): {context}"),
+        ("ai", "According to the context, the answer to your question -- {question} -- is: "),
+    ])
     
     # Retrieve documents with similar embedding
     retriever = Chroma(

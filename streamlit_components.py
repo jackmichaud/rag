@@ -8,7 +8,7 @@ def chatbot(chat_function: callable):
 
     # Title of the Streamlit app
     with col1:
-        st.header("RAG Teaching Assistant", divider="orange")
+        st.header("RAG Contextualizer", divider="orange")
     with col2:
         context_collection = context_selector()
 
