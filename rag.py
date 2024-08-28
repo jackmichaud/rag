@@ -14,18 +14,16 @@ from langchain.load import dumps
 from langchain_groq import ChatGroq
 import streamlit as st
 
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+# __import__('pysqlite3')
+# import sys
+# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 def stream_rag_pipeline(question: str, collection_name: str):
 
     prompt = ChatPromptTemplate.from_messages([
         ("system", "You are an assistant whose goal is to answer a user's question given the context from the following document collection: {expertise}"),
         ("system", "Use only the context provided by the system to develop you answer. If the context does not answer the question, say so. Do not overexplain. If you quote something from this context, copy it exactly without changing the words, and cite where you got the information from."),
-        ("human", "User question: {question}"),
-        ("system", "Context ranked from most relevant (top) to least relevant (bottom): {context} \n If no documents are relevant to the question, just say \"I don't know\"."),
-        ("ai", "According to the context above, the answer to your question -- {question} -- is: "),
+        ("ai", "According to the context: {context} \n\n The answer to your question -- {question} -- is: "),
     ])
     
     # Retrieve documents with similar embedding
