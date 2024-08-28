@@ -121,16 +121,16 @@ def update_vectorstore_collection(collection_name: str):
     for chunk in chunks:
         if chunk.metadata["id"] not in existing_ids:
             # Add metadata to the document
-            chunk_summary = generate_metadata(chunk)
-            summaries += "Chunk " + chunk.metadata["id"] + " summary: " + chunk_summary + "\n\n"
-            chunk.metadata["summary"] = chunk_summary
+            #chunk_summary = generate_metadata(chunk)
+            #summaries += "Chunk " + chunk.metadata["id"] + " summary: " + chunk_summary + "\n\n"
+            #chunk.metadata["summary"] = chunk_summary
 
             new_chunks.append(chunk)
 
     print("📝 Summarizing document")
-    document_summary = generate_document_summary(summaries)
-    for chunk in new_chunks:
-        chunk.metadata["document_summary"] = document_summary
+    #document_summary = generate_document_summary(summaries)
+    #for chunk in new_chunks:
+    #    chunk.metadata["document_summary"] = document_summary
     
     if len(new_chunks):
         print(f"👉 Adding new documents: {len(new_chunks)}")
