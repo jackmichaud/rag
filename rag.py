@@ -22,8 +22,8 @@ def stream_rag_pipeline(question: str, collection_name: str):
 
     prompt = ChatPromptTemplate.from_messages([
         ("system", "You are an assistant whose goal is to answer a user's question given the context from the following document collection: {expertise}"),
-        ("system", "Use only the context provided by the system to develop you answer. If the context does not answer the question, say so. Do not overexplain. If you quote something from this context, copy it exactly without changing the words, and cite where you got the information from."),
-        ("ai", "According to the context: {context} \n\n The answer to your question -- {question} -- is: "),
+        ("system", "Use only the context provided to develop you answer. If the context does not answer the question, say so. Do not overexplain. If you quote something from this context, copy it exactly without changing the words, and cite where you got the information from."),
+        ("system", "Context: \n\n {context} \n\n The answer to your question -- {question} -- is: "),
     ])
     
     # Retrieve documents with similar embedding
