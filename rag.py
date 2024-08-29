@@ -53,8 +53,6 @@ def stream_rag_pipeline(question: str, collection_name: str):
     chain = prompt | model | parser
 
     sources = [os.path.basename(doc.metadata.get("id", None)) for doc in similar]
-    
-    return {"response": stream_data(context), "sources": sources}
 
     return {"response": chain.stream({"question": question, "context": context, "expertise": collection_name}), "sources": sources}
 
