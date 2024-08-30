@@ -1,15 +1,18 @@
 import os
 
 from langchain_community.vectorstores import Chroma
-from langchain_community.document_loaders import PyPDFDirectoryLoader
+from langchain_community.document_loaders import PyPDFDirectoryLoader, PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.embeddings.ollama import OllamaEmbeddings
 from langchain.prompts import ChatPromptTemplate
 from langchain_groq import ChatGroq
 from langchain_core.output_parsers import StrOutputParser
 from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
+from langchain_experimental.text_splitter import SemanticChunker
 
 import streamlit as st
+
+import random
 
 
 def get_embedding_function():
@@ -59,18 +62,24 @@ def delete_file(file_path):
 
 
 
-def update_vectorstore_collection(collection_name: str):
+def update_vectorstore_collection(collection_name: str, file_name: str):
     # Load documents in a given colleciton
-    document_loader = PyPDFDirectoryLoader(os.path.join("data", collection_name))
+    document_loader = PyPDFLoader(os.path.join("data", collection_name, file_name))
     docs = document_loader.load()
     print("Loaded", len(docs), "documents")
 
     # Split documents
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size = 500,
-        chunk_overlap = 20,
-        is_separator_regex = False
-    )
+    # text_splitter = RecursiveCharacterTextSplitter(
+    #     chunk_size = 550,
+    #     chunk_overlap = 100,
+    #     is_separator_regex = False
+    # )
+
+    # TODO: Check if documents loaded are not gibberish
+    # select up to 10 random chunks
+
+    text_splitter = SemanticChunker(get_embedding_function(), breakpoint_threshold_type="percentile")
+
     chunks = text_splitter.split_documents(docs)
     print("Documents split into " + str(len(chunks)) + " chunks")
 

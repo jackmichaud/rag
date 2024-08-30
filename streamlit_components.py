@@ -93,7 +93,7 @@ def file_uploader(post_upload_function: callable):
             
             st.sidebar.success(f"File '{file.name}' has been uploaded successfully!")
         if post_upload_function is not None:
-            post_upload_function(collection)
+            post_upload_function(collection, file.name)
     
     # Add a horizontal line below the collection selector
     st.sidebar.markdown("<hr>", unsafe_allow_html=True)
