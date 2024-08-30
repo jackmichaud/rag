@@ -1,3 +1,5 @@
+import streamlit as st
+import random
 import os
 
 from langchain_community.vectorstores import Chroma
@@ -10,11 +12,6 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
 from langchain_experimental.text_splitter import SemanticChunker
 from langchain_core.pydantic_v1 import BaseModel
-
-import streamlit as st
-
-import random
-
 
 def get_embedding_function():
     embeddings = HuggingFaceInferenceAPIEmbeddings(
