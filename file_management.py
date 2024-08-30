@@ -9,6 +9,7 @@ from langchain_groq import ChatGroq
 from langchain_core.output_parsers import StrOutputParser
 from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
 from langchain_experimental.text_splitter import SemanticChunker
+from langchain_core.pydantic_v1 import BaseModel
 
 import streamlit as st
 
@@ -65,23 +66,16 @@ def delete_file(file_path):
 def update_vectorstore_collection(collection_name: str, file_name: str):
     # Load documents in a given colleciton
     document_loader = PyPDFLoader(os.path.join("data", collection_name, file_name))
-    docs = document_loader.load()
-    print("Loaded", len(docs), "documents")
-
-    # Split documents
-    # text_splitter = RecursiveCharacterTextSplitter(
-    #     chunk_size = 550,
-    #     chunk_overlap = 100,
-    #     is_separator_regex = False
-    # )
-
-    # TODO: Check if documents loaded are not gibberish
-    # select up to 10 random chunks
+    doc = document_loader.load()
+    print("Loaded", len(doc), "documents")
 
     text_splitter = SemanticChunker(get_embedding_function(), breakpoint_threshold_type="percentile")
 
-    chunks = text_splitter.split_documents(docs)
+    chunks = text_splitter.split_documents(doc)
     print("Documents split into " + str(len(chunks)) + " chunks")
+
+    # Check if documents are gibberish
+    regenerate = check_if_gibberish(random.sample(chunks, 8))
 
     # Calculate chunk ids
     last_page_id = None
@@ -178,3 +172,33 @@ def generate_document_summary(summary):
     summary = chain.invoke({"context": summary})
 
     return summary
+
+def check_if_gibberish(text_samples):
+
+    # The amount of gibberish that is allowed
+    PERCENT_CUTOFF = 25
+
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", "Sometimes when loading pdfs, the resulting text is gibberish. For example: @onknmd) F-) Adbg) O-) ds `k- &0887(- Sgd e`bsnq rsqtbstqd ne sgd C-) % Anqrannl) C- &1/01(- pfq`og9 Mdsvnqj uhrt`khy`shnmr neRE,25 Gd`ksg Rtqudx hm 0/ bntmsqhdr9 qdrtksr eqnl sgd HPNK@ qdk`shnmrghor hm orxbgnldsqhb c`s`- IntqmYk ne RsYshrshbYk Rnes")
+        ("system", "Check if the following text is gibberish: {text}")
+    ])
+
+    model = ChatGroq(model="mixtral-8x7b-32768", temperature=0)
+
+    model = model.with_structured_output(BooleanOutput)
+
+    chain = prompt | model
+
+    summary = chain.batch([{"text": text} for text in text_samples])
+
+    # check if more than 25% of the text is gibberish
+    gibberish_percentage = 0
+    for summary in summary:
+        if summary["is_gibberish"]:
+            gibberish_percentage += 1
+    gibberish_percentage = gibberish_percentage / len(summary) * 100
+
+    return gibberish_percentage >= PERCENT_CUTOFF
+
+class BooleanOutput(BaseModel):
+    is_gibberish: bool
