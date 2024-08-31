@@ -4,7 +4,6 @@ import time
 from langchain_core.pydantic_v1 import BaseModel, Field, conlist, ConstrainedList
 from typing import List
 
-from langchain_community.vectorstores import Chroma
 from langchain.prompts import ChatPromptTemplate
 from langchain_community.embeddings.ollama import OllamaEmbeddings
 from langchain_core.output_parsers import StrOutputParser
@@ -17,6 +16,8 @@ import streamlit as st
 __import__('pysqlite3')
 import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
+from langchain_community.vectorstores import Chroma
 
 def stream_rag_pipeline(question: str, collection_name: str):
 
