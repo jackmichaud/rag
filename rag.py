@@ -17,7 +17,7 @@ __import__('pysqlite3')
 import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 
 def stream_rag_pipeline(question: str, collection_name: str):
 
