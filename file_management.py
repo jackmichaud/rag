@@ -72,7 +72,7 @@ def update_vectorstore_collection(collection_name: str, file_name: str):
     print("Documents split into " + str(len(chunks)) + " chunks")
 
     # Check if documents are gibberish
-    regenerate = check_if_gibberish(random.sample(chunks, 8))
+    regenerate = check_if_gibberish(random.sample(chunks, 4))
 
     # Calculate chunk ids
     last_page_id = None
@@ -176,7 +176,7 @@ def check_if_gibberish(text_samples):
     PERCENT_CUTOFF = 25
 
     prompt = ChatPromptTemplate.from_messages([
-        ("system", "Sometimes when loading pdfs, the resulting text is gibberish. For example: @onknmd) F-) Adbg) O-) ds `k- &0887(- Sgd e`bsnq rsqtbstqd ne sgd C-) % Anqrannl) C- &1/01(- pfq`og9 Mdsvnqj uhrt`khy`shnmr neRE,25 Gd`ksg Rtqudx hm 0/ bntmsqhdr9 qdrtksr eqnl sgd HPNK@ qdk`shnmrghor hm orxbgnldsqhb c`s`- IntqmYk ne RsYshrshbYk Rnes")
+        ("system", "Sometimes when loading pdfs, the resulting text is gibberish. For example: @onknmd) F-) Adbg) O-) ds 'k- &0887(- Sgd e`bsnq rsqtbstqd ne sgd C-) % Anqrannl) C- &1/01(- pfq`og9 Mdsvnqj uhrt`khy`shnmr neRE,25 Gd`ksg Rtqudx hm 0/ bntmsqhdr9 qdrtksr eqnl sgd HPNK@ qdk`shnmrghor hm orxbgnldsqhb c`s`- IntqmYk ne RsYshrshbYk Rnes"),
         ("system", "Check if the following text is gibberish: {text}")
     ])
 
@@ -186,14 +186,16 @@ def check_if_gibberish(text_samples):
 
     chain = prompt | model
 
-    summary = chain.batch([{"text": text} for text in text_samples])
+    batch_tests = chain.batch([{"text": text} for text in text_samples])
+
+    print(f"Batch tests: {batch_tests}")
 
     # check if more than 25% of the text is gibberish
     gibberish_percentage = 0
-    for summary in summary:
-        if summary["is_gibberish"]:
+    for test in batch_tests:
+        if test.is_gibberish:
             gibberish_percentage += 1
-    gibberish_percentage = gibberish_percentage / len(summary) * 100
+    gibberish_percentage = gibberish_percentage / len(batch_tests) * 100
 
     return gibberish_percentage >= PERCENT_CUTOFF
 
