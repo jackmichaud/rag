@@ -8,6 +8,7 @@ langchain_groq
 typing
 chromadb
 pypdf
+pytesseract
 
 pysqlite3-binary
 
