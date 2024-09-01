@@ -1,4 +1,5 @@
 import streamlit as st
+import pytesseract
 import random
 import os
 
@@ -73,6 +74,14 @@ def update_vectorstore_collection(collection_name: str, file_name: str):
 
     # Check if documents are gibberish
     regenerate = check_if_gibberish(random.sample(chunks, 4))
+    if(regenerate):
+        # Use OCR on each page
+        pages = []
+        text = ''
+        for page in pages:
+            text += pytesseract.image_to_string(page)
+
+        chunks = text_splitter.split_text(text)
 
     # Calculate chunk ids
     last_page_id = None
