@@ -10,6 +10,8 @@ chromadb
 cryptography
 pypdf
 
+streamlit_modal
+
 
 pysqlite3-binary
 
