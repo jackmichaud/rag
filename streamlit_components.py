@@ -1,16 +1,28 @@
 import os
 import streamlit as st
 
+from streamlit_modal import Modal
+
 from file_management import list_uploaded_files
 
+# Initialize the 'show_settings' variable in session state
+if "show_settings" not in st.session_state:
+    st.session_state.show_settings = False
+
+# Function to toggle the settings modal visibility
+def toggle_settings():
+    st.session_state.show_settings = True
+
 def chatbot(chat_function: callable):
-    col1, col2 = st.columns([4,2])
+    col1, col2, col3 = st.columns([6,2,1])
 
     # Title of the Streamlit app
     with col1:
         st.header("RAG Contextualizer", divider="orange")
     with col2:
         context_collection = context_selector()
+    with col3:
+        st.button(":gear:", on_click=toggle_settings, use_container_width=True)
 
     # Initialize chat history
     if "messages" not in st.session_state:
@@ -37,6 +49,15 @@ def chatbot(chat_function: callable):
         # Add assistant response to chat history
         st.session_state.messages.append({"role": "assistant", "content": response})
     
+
+# The settings modal component
+def settings_modal():
+    if st.session_state.show_settings:
+        
+        st.write("### Settings Modal")
+        # Add more settings components here
+        st.slider("Option 1", 0, 100, 50)
+        st.selectbox("Option 2", ['Choice A', 'Choice B', 'Choice C'])
 
 def context_selector():
     # Add a selectbox to the sidebar:
@@ -108,9 +129,9 @@ def file_explorer(delete_file: callable):
                 file_path = os.path.join(f"data/{collection}/", file)
                 file_path_md = file_path.replace(" ", "&nbsp;")
 
-                col1, col2 = st.sidebar.columns([1, 1])
+                col1, col2 = st.sidebar.columns([2, 1])
                 with col1:
-                    st.markdown(f"- [{file}]({file_path_md})", unsafe_allow_html=True)
+                    st.markdown(f"- <a href={file_path_md} download={file} style='word-wrap: break-word;'>{file}</a>", unsafe_allow_html=True)
                 with col2:
                     st.button("Delete", on_click=delete_file, args=[file_path], key=file_path)
     else:
